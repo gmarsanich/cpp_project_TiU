@@ -31,6 +31,7 @@ void play() {
         }
 
         if (startBall == 1) {
+            dir = sample(starting_dirs);
             if (dir == 1) {  // TOP RIGHT
                 ballPos[0] = ballPos[0] - 1;
                 ballPos[1] = ballPos[1] + 2;
