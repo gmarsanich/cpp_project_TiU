@@ -1,0 +1,4 @@
+- Make initial ball direction random
+- Make the ball bounce off the sides of the playable area
+- Fix the replay bug
+- Implement AI player
