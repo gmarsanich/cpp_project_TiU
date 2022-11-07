@@ -1,1 +1,1 @@
-###AI powered brick-breaker for my C++ class
+### AI powered brick breaker game for my C++ class
