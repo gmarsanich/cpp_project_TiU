@@ -1,4 +1,4 @@
-- Make initial ball direction random
-- Make the ball bounce off the sides of the playable area
+- Make initial ball direction random\*
+  - It only goes left or right, can't go between the extremes
 - Fix the replay bug
 - Implement AI player
