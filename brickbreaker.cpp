@@ -1,5 +1,8 @@
 #include "brickbreaker.hpp"
+
+// Game loop function
 void play() {
+    dir = sample(starting_dirs);
     while (1) {
         system("cls");
         drawBricks();
@@ -11,7 +14,7 @@ void play() {
         gotoxy(ballPos[1], ballPos[0]);
         std::cout << "0";
 
-        // Checks for keyboard inputs
+        // Checks for keyboard inputs - will be deprecated when the AI agent is implemented
         if (kbhit()) {
             char ch = getch();
             if (ch == 'd' || ch == 'D' || ch == 77) {
@@ -31,7 +34,6 @@ void play() {
         }
 
         if (startBall == 1) {
-            dir = sample(starting_dirs);
             if (dir == 1) {  // TOP RIGHT
                 ballPos[0] = ballPos[0] - 1;
                 ballPos[1] = ballPos[1] + 2;
@@ -127,11 +129,17 @@ int main() {
     system("cls");
     gotoxy(10, 5);
     gotoxy(10, 6);
-    std::cout << "EPILEPSY WARNING:\nTHIS GAME MAY CONTAIN FLASHING LIGHTS\n\tPLAY AT YOUR OWN RISK";
-    std::cout << "\nYOU CAN PRESS CTRL+C TO CLOSE THE GAME AT ANY POINT";
-    gotoxy(10, 7);
 
-    Sleep(3500);
+    while (true) {
+        std::cout << "EPILEPSY WARNING:\nTHIS GAME MAY CONTAIN FLASHING LIGHTS\n\tPLAY AT YOUR OWN RISK";
+        std::cout << "\nYOU CAN PRESS CTRL+C TO CLOSE THE GAME AT ANY POINT";
+        std::cout << "\n\tPRESS ANY KEY TO CONTINUE";
+        gotoxy(10, 7);
+        char ch = getch();
+        if (ch) {
+            break;
+        }
+    }
 
     do {
         system("cls");
@@ -158,7 +166,7 @@ int main() {
                 instructions();
             case '3':
                 std::cout << "\nThanks for playing!";
-                Sleep(500);
+                Sleep(250);
                 exit(0);
         }
 
@@ -168,5 +176,4 @@ int main() {
 
     std::cout << std::endl
               << std::endl;
-    return 0;
 }
