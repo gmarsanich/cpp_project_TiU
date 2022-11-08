@@ -60,8 +60,8 @@ std::array<int, 4> dirs = {1, 2, 3, 4};
 std::array<int, 4> starting_dirs = {1, 2};
 
 int startBall = 0;
-int dir;  // 1-top right, 2-top left, 3-bottom left, 4-bottom right
 int bricksLeft = NO_BRICKS;
+int dir = 1;  // 1-top right, 2-top left, 3-bottom left, 4-bottom right
 bool win = 0;
 bool lose = 0;
 
@@ -72,7 +72,7 @@ template <std::size_t SIZE>
 int sample(std::array<int, SIZE> arr) {
     srand(time(NULL));
     int n = rand() % arr.size();
-    return n;
+    return n + 1;
 }
 
 // Moves the cursor to an (x, y) position
