@@ -2,17 +2,16 @@
 
 // Game loop function
 void play() {
+    int lives = 3;
     dir = sample(starting_dirs);
+
     while (1) {
         system("cls");
         drawBricks();
-        drawBorder();
+        // drawBorder();
 
-        gotoxy(sliderPos[1], sliderPos[0]);
-        std::cout << "=========";
-
-        gotoxy(ballPos[1], ballPos[0]);
-        std::cout << "0";
+        drawPaddle();
+        drawBall();
 
         // Checks for keyboard inputs - will be deprecated when the AI agent is implemented
         if (kbhit()) {
@@ -55,7 +54,9 @@ void play() {
                 ballPos[1] = ballPos[1] - 2;
 
                 if (ballPos[0] > MAX_Y) {
-                    lose = 1;
+                    lives -= 1;
+                    drawPaddle();
+                    drawBall();
                     break;
                 } else if (ballPos[1] < MIN_X) {
                     dir = 4;
@@ -66,7 +67,9 @@ void play() {
                 if (ballPos[1] > MAX_X) {
                     dir = 3;
                 } else if (ballPos[0] > MAX_Y) {
-                    lose = 1;
+                    drawPaddle();
+                    drawBall();
+                    lives -= 1;
                     break;
                 }
             }
@@ -76,6 +79,11 @@ void play() {
 
         ballHitBrick();
 
+        if (lives < 0) {
+            lose = 1;
+            break;
+        }
+
         if (bricksLeft == 0) {
             win = 1;
             break;
@@ -84,7 +92,7 @@ void play() {
         Sleep(30);
     }
 
-    if (lose == 1) {
+    if (lives == 0) {
         system("cls");
 
         gotoxy(10, 5);
