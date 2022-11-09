@@ -1,4 +1,11 @@
 - Make initial ball direction random\*
   - It only goes left or right, can't go between the extremes
+  - Implement angular directions (i.e. not left or right - see project pdf for info)	
 - Fix the replay bug
+- Make ball bounce back when it hits brick
+- When ball hits brick, make integrity go down by one
+  - When integrity < 1, brick disappears
 - Implement AI player
+- Implement lives (no instant fail when ball drops)
+- Refactor using OOP (for some reason)
+
