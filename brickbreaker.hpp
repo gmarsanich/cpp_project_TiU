@@ -12,17 +12,18 @@
 #include <array>
 #include <iostream>
 
+#include "objects.hpp"
 //////// CONSTANTS AND DATA STRUCTURES
 
 // Screen size constants
-#define SCREEN_WIDTH 52
-#define SCREEN_HEIGHT 20
+#define SCREEN_WIDTH 640   // -> 640, default 52
+#define SCREEN_HEIGHT 480  // -> 480, default 20
 
 // Min and max (x, y) values for the items in the screen
 #define MIN_X 2
 #define MIN_Y 2
-#define MAX_X 49
-#define MAX_Y 19
+#define MAX_X 673  // => 673, default 49
+#define MAX_Y 479  // => 479, default 19
 
 HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 COORD CursorPosition;
@@ -51,7 +52,7 @@ std::array<std::array<int, 2>, NO_BRICKS> bricks = {{{2, 7},
                                                      {6, 27},
                                                      {6, 32},
                                                      {6, 37},
-                                                     {6, 42}}};
+                                                     {60, 42}}};
 
 std::array<int, NO_BRICKS> visibleBricks = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 std::array<int, 2> sliderPos = {18, 22};
@@ -59,6 +60,7 @@ std::array<int, 2> ballPos = {17, 26};
 std::array<int, 4> dirs = {1, 2, 3, 4};
 std::array<int, 4> starting_dirs = {1, 2};
 
+std::string padding = "   ";
 int startBall = 0;
 int bricksLeft = NO_BRICKS;
 int dir = 1;  // 1-top right, 2-top left, 3-bottom left, 4-bottom right
@@ -116,7 +118,7 @@ void drawBricks() {
     for (int i = 0; i < NO_BRICKS; i++) {
         if (visibleBricks[i] == 1) {
             gotoxy(bricks[i][1], bricks[i][0]);
-            std::cout << "####";
+            std::cout << "####" << padding;
         }
     }
 }
@@ -147,4 +149,15 @@ void ballHitBrick() {
     }
 }
 
+// Draws the ball at its initial position
+void drawBall() {
+    gotoxy(ballPos[1], ballPos[0]);
+    std::cout << "0";
+}
+
+// Draws the paddle ball at its initial position
+void drawPaddle() {
+    gotoxy(sliderPos[1], sliderPos[0]);
+    std::cout << "=========";
+}
 #endif
