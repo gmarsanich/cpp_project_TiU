@@ -4,55 +4,60 @@
 
 #include <iostream>
 
-// This file contains the definitions of game objects - i.e. the paddle and bricks
+// This file contains the definitions of game objects - i.e. paddle, bricks, ball
 
-class Brick {
+// Parent class of all game objects
+class GameObject {
    private:
-    // Brick attributes
+    // Game object attributes - x position, y position, shape
     int xPos;
     int yPos;
-    std::string padding;
     std::string shape;
+
+   public:
+    // CONSTRUCTOR
+    explicit GameObject(std::string shape, int xPos, int yPos) {
+        // All game objects have a shape and an (x, y) coordinate
+        this->shape = shape;
+        this->xPos = xPos;
+        this->yPos = yPos;
+    }
+
+    // Getters and setters
+    std::string getShape() { return this->shape; }
+    int getxPos() { return this->xPos; }
+    int getyPos() { return this->yPos; }
+};
+
+class Brick : public GameObject {
+    // Brick is heavily based on GameObject parent class, except for the padding attribute
+    // which determines which character pads the brick shape. It should be the space character ' ', otherwise it will be visible in the game
+   private:
+    // Brick attributes
+    std::string padding;
 
    public:
     // Brick methods
 
     // CONSTRUCTOR
-    Brick(std::string shape, std::string padding, int xPos, int yPos) {
-        this->shape = shape;
-        this->padding = padding;
-        this->xPos = xPos;
-        this->yPos = yPos;
-    }
+    using GameObject::GameObject;
 
     // Getters and setters
-    std::string getShape() { return this->shape; }
+    // Padding is set separately from the constructor because I could not figure out how to overload it safely :)
+    void setPadding(std::string padding) { this->padding = padding; }
     std::string getPadding() { return this->padding; }
-    int getxPos() { return this->xPos; }
-    int getyPos() { return this->yPos; }
 };
 
-class Paddle {
-   private:
-    // Paddle attributes
-    int xPos;
-    int yPos;
-    std::string shape;
+// Ball and paddle classes are inherited entirely from GameObject
 
+class Paddle : public GameObject {
    public:
-    // Paddle methods
+    using GameObject::GameObject;
+};
 
-    // CONSTRUCTOR
-    Paddle(std::string shape, int xPos, int yPos) {
-        this->shape = shape;
-        this->xPos = xPos;
-        this->yPos = yPos;
-    }
-
-    // Getters and setters
-    std::string getShape() { return this->shape; }
-    int getxPos() { return this->xPos; }
-    int getyPos() { return this->yPos; }
+class Ball : public GameObject {
+   public:
+    using GameObject::GameObject;
 };
 
 #endif
