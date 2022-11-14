@@ -8,3 +8,5 @@
 - Implement AI player
 - Implement lives (no instant fail when ball drops)
 - Refactor using OOP (for some reason)
+  - So far created GameObject class and subclasses
+  - Began implementing them in the brickbreaker.hpp file
