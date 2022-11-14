@@ -10,9 +10,9 @@
 class GameObject {
    private:
     // Game object attributes - x position, y position, shape
+    std::string shape;
     int xPos;
     int yPos;
-    std::string shape;
 
    public:
     // CONSTRUCTOR
