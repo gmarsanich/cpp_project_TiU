@@ -2,6 +2,7 @@
 #ifndef BRICKBREAKER_HPP
 #define BRICKBREAKER_HPP
 
+// External headers
 #include <conio.h>
 #include <dos.h>
 #include <stdlib.h>
@@ -9,11 +10,15 @@
 #include <time.h>
 #include <windows.h>
 
+// Builtin headers
 #include <array>
 #include <iostream>
+#include <vector>
 
+// Local headers
 #include "objects.hpp"
-//////// CONSTANTS AND DATA STRUCTURES
+
+//////// CONSTANTS, DATA STRUCTURES AND INTERNAL FUNCTIONS
 
 // Screen size constants
 #define SCREEN_WIDTH 640   // -> 640, default 52
@@ -29,38 +34,36 @@ HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 COORD CursorPosition;
 
 const int NO_BRICKS = 24;
-std::array<std::array<int, 2>, NO_BRICKS> bricks = {{{2, 7},
-                                                     {2, 12},
-                                                     {2, 17},
-                                                     {2, 22},
-                                                     {2, 27},
-                                                     {2, 32},
-                                                     {2, 37},
-                                                     {2, 42},
-                                                     {4, 7},
-                                                     {4, 12},
-                                                     {4, 17},
-                                                     {4, 22},
-                                                     {4, 27},
-                                                     {4, 32},
-                                                     {4, 37},
-                                                     {4, 42},
-                                                     {6, 7},
-                                                     {6, 12},
-                                                     {6, 17},
-                                                     {6, 22},
-                                                     {6, 27},
-                                                     {6, 32},
-                                                     {6, 37},
-                                                     {60, 42}}};
 
+// No other way to make this work
+// Fills a vector of Brick objects. Size specified by the size parameter
+
+auto fillVector(int size) {
+    std::vector<Brick> bricks = {};
+    int vec_size = 0;
+    while (vec_size <= size) {
+        for (int x = 0; x <= 6; x++) {
+            for (int y = 7; y <= 42; y += 5) {
+                Brick *b = new Brick("###", x, y);
+                b->setPadding("   ");
+                bricks.push_back(*b);
+            }
+        }
+        vec_size++;
+    }
+
+    return bricks;
+}
+
+std::vector<Brick> bricks = fillVector(NO_BRICKS);
 std::array<int, NO_BRICKS> visibleBricks = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 std::array<int, 2> sliderPos = {18, 22};
 std::array<int, 2> ballPos = {17, 26};
 std::array<int, 4> dirs = {1, 2, 3, 4};
 std::array<int, 4> starting_dirs = {1, 2};
 
-std::string padding = "   ";
+Paddle *paddle = new Paddle("==========", sliderPos[0], sliderPos[1]);
+Ball *ball = new Ball("0", ballPos[0], ballPos[1]);
 int startBall = 0;
 int bricksLeft = NO_BRICKS;
 int dir = 1;  // 1-top right, 2-top left, 3-bottom left, 4-bottom right
@@ -117,8 +120,8 @@ void drawBorder() {
 void drawBricks() {
     for (int i = 0; i < NO_BRICKS; i++) {
         if (visibleBricks[i] == 1) {
-            gotoxy(bricks[i][1], bricks[i][0]);
-            std::cout << "####" << padding;
+            gotoxy(bricks[i].getxPos(), bricks[i].getyPos());
+            std::cout << bricks[i].getShape() << bricks[i].getPadding();
         }
     }
 }
@@ -139,8 +142,8 @@ void ballHitSlider() {
 void ballHitBrick() {
     for (int i = 0; i < NO_BRICKS; i++) {
         if (visibleBricks[i] == 1) {
-            if (ballPos[1] >= bricks[i][1] && ballPos[1] <= bricks[i][1] + 8) {
-                if (ballPos[0] == bricks[i][0]) {
+            if (ballPos[1] >= bricks[i].getyPos() && ballPos[1] <= bricks[i].getyPos() + 8) {
+                if (ballPos[0] == bricks[i].getxPos()) {
                     visibleBricks[i] = 0;
                     bricksLeft--;
                 }
@@ -151,13 +154,13 @@ void ballHitBrick() {
 
 // Draws the ball at its initial position
 void drawBall() {
-    gotoxy(ballPos[1], ballPos[0]);
-    std::cout << "0";
+    gotoxy(ball->getxPos(), ball->getyPos());
+    std::cout << ball->getShape();
 }
 
 // Draws the paddle ball at its initial position
 void drawPaddle() {
-    gotoxy(sliderPos[1], sliderPos[0]);
-    std::cout << "=========";
+    gotoxy(paddle->getxPos(), paddle->getyPos());
+    std::cout << paddle->getShape();
 }
 #endif
