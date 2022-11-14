@@ -1,6 +1,6 @@
 import os
 
-cmp = r"g++ .\brickbreaker.cpp -o .\brickbreaker.exe"
+cmp = r"g++ -O2 .\brickbreaker.cpp -o .\brickbreaker.exe"
 run = r".\brickbreaker.exe"
 
 os.system(cmp)
