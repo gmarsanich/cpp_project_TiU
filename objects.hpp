@@ -31,10 +31,13 @@ class GameObject {
 
 class Brick : public GameObject {
     // Brick is heavily based on GameObject parent class, except for the padding attribute
-    // which determines which character pads the brick shape. It should be the space character ' ', otherwise it will be visible in the game
+    // which determines which character pads the brick shape.
+    // It should be the space character ' ', otherwise it will be visible in the game (and we don't want that)
    private:
     // Brick attributes
     std::string padding;
+    bool isVisible;
+    int integrity = 3;
 
    public:
     // Brick methods
@@ -43,9 +46,15 @@ class Brick : public GameObject {
     using GameObject::GameObject;
 
     // Getters and setters
-    // Padding is set separately from the constructor because I could not figure out how to overload it safely :)
+    // I resorted to giving extra attributes their own methods
     void setPadding(std::string padding) { this->padding = padding; }
     std::string getPadding() { return this->padding; }
+
+    void setVisible(bool visible) { this->isVisible = visible; }
+    bool getVisible() { return this->isVisible; }
+
+    void setIntegrity(int integrity) { this->integrity = integrity; }
+    int getIntegrity() { return this->integrity; }
 };
 
 // Ball and paddle classes are inherited entirely from GameObject
