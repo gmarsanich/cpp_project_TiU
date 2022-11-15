@@ -8,7 +8,6 @@ void play() {
     while (1) {
         system("cls");
         drawBricks();
-        // drawBorder();
 
         drawPaddle();
         drawBall();
@@ -18,11 +17,11 @@ void play() {
             char ch = getch();
             if (ch == 'd' || ch == 'D' || ch == 77) {
                 if (sliderPos[1] < 44)
-                    sliderPos[1] = sliderPos[1] + 2;
+                    sliderPos[1] += 2;
             }
             if (ch == 'a' || ch == 'A' || ch == 75) {
                 if (sliderPos[1] > 2)
-                    sliderPos[1] = sliderPos[1] - 2;
+                    sliderPos[1] -= 2;
             }
             if (ch == 32) {
                 startBall = 1;
@@ -34,24 +33,24 @@ void play() {
 
         if (startBall == 1) {
             if (dir == 1) {  // TOP RIGHT
-                ballPos[0] = ballPos[0] - 1;
-                ballPos[1] = ballPos[1] + 2;
+                ballPos[0] -= -1;
+                ballPos[1] += 2;
                 if (ballPos[1] > MAX_X) {
                     dir = 2;
                 } else if (ballPos[0] < MIN_Y) {
                     dir = 4;
                 }
             } else if (dir == 2) {  // TOP LEFT
-                ballPos[0] = ballPos[0] - 1;
-                ballPos[1] = ballPos[1] - 2;
+                ballPos[0] -= 1;
+                ballPos[1] -= 2;
                 if (ballPos[0] < MIN_Y) {
                     dir = 3;
                 } else if (ballPos[1] < MIN_X) {
                     dir = 1;
                 }
             } else if (dir == 3) {  // BOTTOM LEFT
-                ballPos[0] = ballPos[0] + 1;
-                ballPos[1] = ballPos[1] - 2;
+                ballPos[0] += 1;
+                ballPos[1] -= 2;
 
                 if (ballPos[0] > MAX_Y) {
                     lives -= 1;
@@ -62,8 +61,8 @@ void play() {
                     dir = 4;
                 }
             } else if (dir == 4) {  // BOTTOM RIGHT
-                ballPos[0] = ballPos[0] + 1;
-                ballPos[1] = ballPos[1] + 2;
+                ballPos[0] += 1;
+                ballPos[1] += 2;
                 if (ballPos[1] > MAX_X) {
                     dir = 3;
                 } else if (ballPos[0] > MAX_Y) {
