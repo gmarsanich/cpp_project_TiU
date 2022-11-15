@@ -21,14 +21,14 @@
 //////// CONSTANTS, DATA STRUCTURES AND INTERNAL FUNCTIONS
 
 // Screen size constants
-#define SCREEN_WIDTH 640   // -> 640, default 52
-#define SCREEN_HEIGHT 480  // -> 480, default 20
+#define SCREEN_WIDTH 640   // default 640
+#define SCREEN_HEIGHT 480  // default 480
 
 // Min and max (x, y) values for the items in the screen
 #define MIN_X 2
 #define MIN_Y 2
-#define MAX_X 673  // => 673, default 49
-#define MAX_Y 479  // => 479, default 19
+#define MAX_X 640  // => default 637
+#define MAX_Y 480  // => default 479
 
 HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 COORD CursorPosition;
@@ -42,10 +42,11 @@ auto fillVector(int size) {
     std::vector<Brick> bricks = {};
     int vec_size = 0;
     while (vec_size <= size) {
-        for (int x = 0; x <= 6; x++) {
-            for (int y = 7; y <= 42; y += 5) {
-                Brick *b = new Brick("###", x, y);
+        for (int x = 300; x <= MAX_X; x++) {         // max 640
+            for (int y = 150; y <= MAX_Y; y += 5) {  // max 480
+                Brick *b = new Brick("\xDB", x, y);
                 b->setPadding("   ");
+                b->setVisible(1);
                 bricks.push_back(*b);
             }
         }
@@ -56,17 +57,16 @@ auto fillVector(int size) {
 }
 
 std::vector<Brick> bricks = fillVector(NO_BRICKS);
-std::array<int, NO_BRICKS> visibleBricks = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-std::array<int, 2> sliderPos = {18, 22};
-std::array<int, 2> ballPos = {17, 26};
-std::array<int, 4> dirs = {1, 2, 3, 4};
+std::array<int, 2> sliderPos = {1, 2};  // {x, y}
+std::array<int, 2> ballPos = {3, 3};
+std::array<int, 4> dirs = {1, 2, 3, 4};  // 1-top right, 2-top left, 3-bottom left, 4-bottom right
 std::array<int, 4> starting_dirs = {1, 2};
 
 Paddle *paddle = new Paddle("==========", sliderPos[0], sliderPos[1]);
 Ball *ball = new Ball("0", ballPos[0], ballPos[1]);
 int startBall = 0;
 int bricksLeft = NO_BRICKS;
-int dir = 1;  // 1-top right, 2-top left, 3-bottom left, 4-bottom right
+int dir = 1;
 bool win = 0;
 bool lose = 0;
 
@@ -99,29 +99,12 @@ void setcursor(bool visible, DWORD size) {
     SetConsoleCursorInfo(console, &cursor);
 }
 
-// Draws the border around the playable area
-void drawBorder() {
-    for (int i = 0; i < SCREEN_WIDTH; i++) {
-        gotoxy(i, 0);
-        std::cout << "--";
-        gotoxy(i, SCREEN_WIDTH);
-        std::cout << "--";
-    }
-
-    for (int i = 0; i < SCREEN_HEIGHT; i++) {
-        gotoxy(0, i);
-        std::cout << "|";
-        gotoxy(SCREEN_WIDTH + 2, i);
-        std::cout << "|";
-    }
-}
-
 // Draws the bricks
 void drawBricks() {
-    for (int i = 0; i < NO_BRICKS; i++) {
-        if (visibleBricks[i] == 1) {
-            gotoxy(bricks[i].getxPos(), bricks[i].getyPos());
-            std::cout << bricks[i].getShape() << bricks[i].getPadding();
+    for (auto &brick : bricks) {
+        if (brick.getVisible()) {
+            gotoxy(brick.getxPos(), brick.getyPos());
+            std::cout << brick.getShape() << brick.getPadding();
         }
     }
 }
@@ -129,6 +112,10 @@ void drawBricks() {
 // Checks if the ball hits the slider and changes the ball's direction if it does
 void ballHitSlider() {
     if (ballPos[1] >= sliderPos[1] && ballPos[1] <= sliderPos[1] + 8) {
+        // if ball y position is greater than or equal to slider y position AND ball y position is smaller than slider y position + 8 (why 8?):
+        // if ball x position is same as slider x position -1:
+        // if direction is bottom left: direction becomes top left
+        // else if direction is bottom right: direction becomes top right
         if (ballPos[0] == sliderPos[0] - 1) {
             if (dir == 3)
                 dir = 2;
@@ -140,12 +127,15 @@ void ballHitSlider() {
 
 // Removes one brick if it's hit by the ball
 void ballHitBrick() {
-    for (int i = 0; i < NO_BRICKS; i++) {
-        if (visibleBricks[i] == 1) {
-            if (ballPos[1] >= bricks[i].getyPos() && ballPos[1] <= bricks[i].getyPos() + 8) {
-                if (ballPos[0] == bricks[i].getxPos()) {
-                    visibleBricks[i] = 0;
-                    bricksLeft--;
+    // range based for loop to avoid messing around with indices
+    for (auto &brick : bricks) {                                                       // for each brick
+        if (brick.getVisible()) {                                                      // if brick is visible (they all start as visible)
+            if (ballPos[1] >= brick.getyPos() && ballPos[1] <= brick.getyPos() + 8) {  // if ball y position is greater than or equal to brick y position
+                                                                                       // and if ball y position is smaller than or equal to brick y position + 8 (8 again?)
+                if (ballPos[0] == brick.getxPos()) {                                   // if ball x position is equal to brick x position
+                    brick.setVisible(0);                                               // brick is made invisible
+
+                    bricksLeft--;  // number of bricks is reduced by 1
                 }
             }
         }
@@ -153,14 +143,25 @@ void ballHitBrick() {
 }
 
 // Draws the ball at its initial position
+// void drawBall() {
+//     gotoxy(ball->getxPos(), ball->getyPos());
+//     std::cout << ball->getShape();
+// }
+
+// // Draws the paddle ball at its initial position
+// void drawPaddle() {
+//     gotoxy(paddle->getxPos(), paddle->getyPos());
+//     std::cout << paddle->getShape();
+// }
+
 void drawBall() {
-    gotoxy(ball->getxPos(), ball->getyPos());
-    std::cout << ball->getShape();
+    gotoxy(ballPos[1], ballPos[0]);
+    std::cout << "0";
 }
 
 // Draws the paddle ball at its initial position
 void drawPaddle() {
-    gotoxy(paddle->getxPos(), paddle->getyPos());
-    std::cout << paddle->getShape();
+    gotoxy(sliderPos[1], sliderPos[0]);
+    std::cout << "=========";
 }
 #endif
