@@ -3,3 +3,5 @@ test.*
 *xml
 .vscode
 *__.py
+GUI_FILES
+*.zip
