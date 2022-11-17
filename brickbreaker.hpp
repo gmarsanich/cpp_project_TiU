@@ -21,14 +21,14 @@
 //////// CONSTANTS, DATA STRUCTURES AND INTERNAL FUNCTIONS
 
 // Screen size constants
-#define SCREEN_WIDTH 640   // default 640
-#define SCREEN_HEIGHT 480  // default 480
+#define SCREEN_WIDTH 52   // default 640
+#define SCREEN_HEIGHT 20  // default 480
 
 // Min and max (x, y) values for the items in the screen
 #define MIN_X 2
 #define MIN_Y 2
-#define MAX_X 640  // => default 637
-#define MAX_Y 480  // => default 479
+#define MAX_X 49  // => default 637
+#define MAX_Y 17  // => default 479
 
 HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 COORD CursorPosition;
@@ -42,8 +42,8 @@ auto fillVector(int size) {
     std::vector<Brick> bricks = {};
     int vec_size = 0;
     while (vec_size <= size) {
-        for (int x = 300; x <= MAX_X; x++) {         // max 640
-            for (int y = 150; y <= MAX_Y; y += 5) {  // max 480
+        for (int x = SCREEN_WIDTH - 20; x <= MAX_X; x += 2) {       // max 640
+            for (int y = SCREEN_HEIGHT - 20; y <= MAX_Y; y += 2) {  // max 480
                 Brick *b = new Brick("\xDB", x, y);
                 b->setPadding("   ");
                 b->setVisible(1);
