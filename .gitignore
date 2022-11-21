@@ -5,3 +5,4 @@ test.*
 *__.py
 GUI_FILES
 *.zip
+.VSCodeCounter
