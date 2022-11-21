@@ -75,7 +75,6 @@ class Brick : public GameObject {
     void updateIntegrity(int dmg) { this->integrity -= dmg; }
 };
 
-// Ball and paddle classes are inherited entirely from GameObject
 class Paddle : public GameObject {
    public:
     using GameObject::GameObject;
