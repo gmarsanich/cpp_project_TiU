@@ -5,12 +5,12 @@ void play() {
     dir = getRandomInt(1, 2);  // Takes random direction
 
     while (1) {
-        system("cls");
+        system("clear");
         drawBricks();
 
         gotoxy(0, 0);
 
-        std::cout << lives << " lives left\n";
+        std::cout << lives << " Lives left\n";
         std::cout << "starting ball direction: " << dir << "\n";
         std::cout << "Score: " << score;
 
@@ -73,16 +73,17 @@ void play() {
                 ball->updatexPos(1);
                 if (ball->getxPos() > MAX_X) {
                     dir = 3;
-                } else if (ball->getyPos() > MAX_Y) {
+                } else if (ball->getyPos() < MAX_Y) {
                     drawPaddle();
                     drawBall();
                     lives -= 1;
+                    resetBall();
+                    resetPaddle();
                 }
             }
-
-            ballHitSlider();
         }
 
+        ballHitSlider();
         ballHitBrick();
 
         if (lives < 0) {
@@ -98,8 +99,8 @@ void play() {
         Sleep(30);
     }
 
-    if (lives == 0) {
-        system("cls");
+    if (lose == true) {
+        system("clear");
 
         gotoxy(10, 5);
         std::cout << " --------------------- ";
@@ -113,8 +114,8 @@ void play() {
         getch();
     }
 
-    if (win == 1) {
-        system("cls");
+    if (win == true) {
+        system("clear");
         gotoxy(10, 5);
         std::cout << " --------------------- ";
         gotoxy(10, 6);
@@ -128,19 +129,9 @@ void play() {
     }
 }
 
-// Prints out the instructions
-void instructions() {
-    system("cls");
-    std::cout << "Instructions";
-    std::cout << "\n----------------";
-    std::cout << "\nPress the spacebar to start playing";
-    std::cout << "\n\nPress any key to go back to the main menu";
-    getch();
-}
-
 int main() {
     setcursor(0, 0);
-    system("cls");
+    system("clear");
     gotoxy(10, 5);
     gotoxy(10, 6);
 
@@ -155,39 +146,8 @@ int main() {
         }
     }
 
-    do {
-        system("cls");
-        gotoxy(10, 5);
-        std::cout << " -------------------------- ";
-        gotoxy(10, 6);
-        std::cout << " |     BRICK BREAKER      | ";
-        gotoxy(10, 7);
-        std::cout << " --------------------------";
-        gotoxy(10, 9);
-        std::cout << "1. Start Game";
-        gotoxy(10, 10);
-        std::cout << "2. Instructions";
-        gotoxy(10, 11);
-        std::cout << "3. Quit";
-        gotoxy(10, 13);
-        std::cout << "Select option: ";
-        char op = getche();
-
-        switch (op) {
-            case '1':
-                play();
-            case '2':
-                instructions();
-            case '3':
-                std::cout << "\nThanks for playing!";
-                Sleep(250);
-                exit(0);
-        }
-
-    } while (1);
-
     play();
 
-    // std::cout << std::endl
-    //           << std::endl;
+    std::cout << std::endl
+              << std::endl;
 }
