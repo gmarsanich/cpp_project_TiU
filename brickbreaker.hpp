@@ -2,6 +2,8 @@
 #ifndef BRICKBREAKER_HPP
 #define BRICKBREAKER_HPP
 
+//////// HEADERS
+
 // External headers
 #include <conio.h>
 #include <dos.h>
@@ -36,9 +38,6 @@ HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 COORD CursorPosition;
 
 const int NO_BRICKS = 12;
-
-// No other way to make this work
-// Fills a vector of Brick objects. Size specified by the size parameter
 
 /**
  * @brief Moves the cursor to an (x, y) position
@@ -82,17 +81,19 @@ auto fillVector(int size) {
 // Vector that holds the bricks
 std::vector<Brick> bricks = fillVector(NO_BRICKS);
 
-// Arrays that hold the possible ball directions
-// dirs has all the possible directions: 1-top right, 2-top left, 3-bottom left, 4-bottom right
+// Array that holds the possible ball directions: 1-top right, 2-top left, 3-bottom left, 4-bottom right
 std::array<int, 4> dirs = {1, 2, 3, 4};
 
 // Constructing the paddle and the ball
 
-const int paddleStartXpos = 62;
-const int paddleStartYpos = 30;
+const int paddleStartXpos = 32;
+const int paddleStartYpos = 20;
+
+const int ballStartXpos = paddleStartXpos + 4;
+const int ballStartYpos = paddleStartYpos;
 
 Paddle *paddle = new Paddle("==========", paddleStartXpos, paddleStartYpos);
-Ball *ball = new Ball("0", paddleStartXpos + 4, paddleStartYpos - 1);  // The ball should always spawn on top of the paddle
+Ball *ball = new Ball("0", ballStartXpos, ballStartXpos);
 
 bool startBall = false;      // Determines whether the ball has started moving or not
 int bricksLeft = NO_BRICKS;  // Number of bricks left on the map
@@ -171,7 +172,6 @@ void ballHitSlider() {
  * @return void
  */
 void ballHitBrick() {
-    // range based for loop to avoid messing around with indices
     for (auto &brick : bricks) {                                                                 // for each brick
         if (brick.getVisible()) {                                                                // if brick is visible (they all start as visible)
             if (ball->getyPos() >= brick.getyPos() && ball->getyPos() <= brick.getyPos() + 8) {  // if ball y position is greater than or equal to brick y position
@@ -185,6 +185,7 @@ void ballHitBrick() {
                         // debugging only
                         gotoxy(0, 0);
                         std::cout << "integrity: " << brick.getIntegrity() << "\n";
+                        score += 1;
                     }
                 }
             }
@@ -211,15 +212,21 @@ void drawPaddle() {
 }
 
 /**
- * @brief Resets the ball and paddle to their initial positions
+ * @brief Resets the ball to its initial positions
  * @return void
  */
-void resetPaddleBall() {
+void resetBall() {
+    ball->setyPos(ballStartXpos);
+    ball->setyPos(ballStartYpos);
+}
+
+/**
+ * @brief Resets the paddle to its initial positions
+ * @return void
+ */
+void resetPaddle() {
     paddle->setxPos(paddleStartXpos);
     paddle->setyPos(paddleStartXpos);
-
-    ball->setyPos(paddleStartXpos + 4);
-    ball->setyPos(paddleStartYpos - 1);
 }
 
 #endif
