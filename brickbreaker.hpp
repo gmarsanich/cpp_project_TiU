@@ -31,7 +31,7 @@
 #define MIN_X 2
 #define MIN_Y 2
 #define MAX_X 49
-#define MAX_Y 17
+#define MAX_Y 19
 
 // Generates a handle for the console and initializes a variable for the cursor position
 HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -104,6 +104,23 @@ int lives = 3;               // Number of lives
 int score = 0;               // Game score
 
 //////// FUNCTIONS FOR MAIN FILE
+
+/**
+ * @brief enables or disables debug information
+ * @param enable bool
+ */
+void dbg(bool enable = false) {
+    switch (enable) {
+        case true:
+            gotoxy(0, 0);
+            std::cout << lives << " Lives left\n";
+            std::cout << "starting ball direction: " << dir << "\n";
+            std::cout << "Score: " << score;
+            std::cout << "ball pos: " << ball->getxPos() << ", " << ball->getyPos() << "\n";
+        case false:
+            std::cout << "\n";
+    }
+}
 
 /**
  * @brief Returns either of 2 random integers (inclusive)
@@ -194,7 +211,7 @@ void ballHitBrick() {
 }
 
 /**
- * @brief Draws the ball at its initial position
+ * @brief Draws the ball at a specified (x, y) position
  * @return void
  */
 void drawBall() {
@@ -203,7 +220,7 @@ void drawBall() {
 }
 
 /**
- * @brief Draws the paddle at its initial position
+ * @brief Draws the paddle at a specified (x, y) position
  * @return void
  */
 void drawPaddle() {
