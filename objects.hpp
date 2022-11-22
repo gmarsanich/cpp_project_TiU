@@ -34,6 +34,7 @@ class GameObject {
 
     // Getters and setters
     std::string getShape() { return this->shape; }
+    void setShape(std::string shape) { this->shape = shape; }
 
     int getxPos() { return this->xPos; }
     void setxPos(int xPos) { this->xPos = xPos; }
