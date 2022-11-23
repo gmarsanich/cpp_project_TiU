@@ -4,62 +4,67 @@
 
 // Game loop function
 void play() {
-    dir = getRandomInt(1, 2);  // Takes random direction
-    Player agent = agent;      // Initializing player
+    Player agent = agent;  // Initializing player
+    int lives = 3;         // Number of lives
+    int score = 0;         // Game score
+    ball->startBall();
+    while (true) {
+        gotoxy(0, 0);
+        std::cout << lives << " Lives left\n";
+        std::cout << "Score: " << score;
 
-    while (1) {
-        dbg(true);
+        dbg();  // Display debug info (set to false)
+
         system("clear");
         drawBricks();
 
-        drawPaddle();
-        drawBall();
+        paddle->drawPaddle();
+        ball->drawBall();
 
-        if (agent.startGame()) {
-            agent.control(dir);
-
-            if (dir == 1) {  // TOP RIGHT
+        // I hope you like if-else chains
+        if (ball->startBall()) {
+            agent.control(ball->getDir());
+            if (ball->getDir() == 1) {  // Top right
                 ball->updatexPos(-1);
                 ball->updateyPos(2);
                 if (ball->getxPos() > MAX_X) {
-                    dir = 2;
+                    ball->setDir(2);
                 } else if (ball->getyPos() < MIN_Y) {
-                    dir = 4;
+                    ball->setDir(4);
                 }
-            } else if (dir == 2) {  // TOP LEFT
-                ball->updatexPos(-1);
-                ball->updateyPos(-2);
+            } else if (ball->getDir() == 2) {  // Top left
+                ball->updateyPos(-1);
+                ball->updatexPos(-2);
                 if (ball->getyPos() < MIN_Y) {
-                    dir = 3;
+                    ball->setDir(3);
                 } else if (ball->getxPos() < MIN_X) {
-                    dir = 1;
+                    ball->setDir(1);
                 }
-            } else if (dir == 3) {  // BOTTOM LEFT
-                ball->updatexPos(1);
-                ball->updateyPos(2);
+            } else if (ball->getDir() == 3) {  // Bottom left
+                ball->updateyPos(1);
+                ball->updatexPos(2);
 
                 if (ball->getyPos() > MAX_Y) {
                     lives -= 1;
-                    resetPaddle();
-                    resetBall();
+                    paddle->resetPaddle();
+                    ball->resetBall();
                 } else if (ball->getxPos() < MIN_X) {
-                    dir = 4;
+                    ball->setDir(4);
                 }
-            } else if (dir == 4) {  // BOTTOM RIGHT
-                ball->updatexPos(1);
-                ball->updateyPos(2);
+            } else if (ball->getDir() == 4) {  // Bottom right
+                ball->updateyPos(1);
+                ball->updatexPos(2);
                 if (ball->getxPos() > MAX_X) {
-                    dir = 3;
-                } else if (ball->getyPos() < paddle->getyPos()) {
+                    ball->setDir(3);
+                } else if (ball->getyPos() > MAX_Y) {
                     lives -= 1;
-                    resetBall();
-                    resetPaddle();
+                    ball->resetBall();
+                    paddle->resetPaddle();
                 }
             }
             ballHitSlider();
+            ballHitBrick();
         }
-
-        ballHitBrick();
 
         if (lives < 0) {
             lose = true;
@@ -116,10 +121,10 @@ int main() {
     while (true) {
         std::cout << "EPILEPSY WARNING:\nTHIS GAME MAY CONTAIN FLASHING LIGHTS\n\tPLAY AT YOUR OWN RISK";
         std::cout << "\nYOU CAN PRESS CTRL+C TO CLOSE THE GAME AT ANY POINT";
-        std::cout << "\n\tPRESS ANY KEY TO CONTINUE";
+        std::cout << "\n\tPRESS THE SPACE BAR TO CONTINUE";
         gotoxy(10, 7);
         char ch = getch();
-        if (ch) {
+        if (ch == 32) {
             break;
         }
     }
