@@ -2,8 +2,7 @@
 #ifndef AGENT_HPP
 #define AGENT_HPP
 
-#include <array>
-
+// Local headers
 #include "brickbreaker.hpp"
 #include "objects.hpp"
 
@@ -18,20 +17,35 @@ class Player {
      * @brief Starts the game
      * @return true
      */
-    bool startGame() {
-        startBall = true;
-        return startBall;
+    void startGame(Ball *ball) {
+        ball->startBall();
     }
 
     // Moving the paddle
     void moveRight(Paddle *paddle) {
-        if (paddle->getxPos() < 44)
+        if (paddle->getxPos() < MAX_X) {
             paddle->updatexPos(2);
+        } else {
+            while (paddle->getxPos() != paddleStartXpos) {
+                stopMove(paddle);
+                this->moveLeft(paddle);
+            }
+        }
     }
 
     void moveLeft(Paddle *paddle) {
-        if (paddle->getxPos() > 2)
+        if (paddle->getxPos() > MIN_X) {
             paddle->updatexPos(-2);
+        } else {
+            while (paddle->getxPos() != paddleStartXpos) {
+                stopMove(paddle);
+                this->moveRight(paddle);
+            }
+        }
+    }
+
+    void stopMove(Paddle *paddle) {
+        paddle->updatexPos(0);
     }
 
     /**
