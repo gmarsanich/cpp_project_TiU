@@ -2,7 +2,15 @@
 #ifndef OBJECTS_HPP
 #define OBJECTS_HPP
 
+// External headers
+#include <time.h>
+
+// Builtin headers
 #include <iostream>
+#include <random>
+
+// Local headers
+#include "console.hpp"
 
 // This file contains the definitions of game objects - i.e. paddle, bricks, ball
 
@@ -45,6 +53,8 @@ class GameObject {
     void updateyPos(int add_yPos) { this->yPos += add_yPos; }
 };
 
+////////////////////////////////////////////////////////////
+
 class Brick : public GameObject {
     /*!
     Brick is heavily based on GameObject parent class, except for the padding attribute which determines which character pads the brick shape.
@@ -76,14 +86,99 @@ class Brick : public GameObject {
     void updateIntegrity(int dmg) { this->integrity -= dmg; }
 };
 
+////////////////////////////////////////////////////////////
+const int paddleStartYpos = MAX_Y;
+const int paddleStartXpos = MAX_X / 2;
+
 class Paddle : public GameObject {
    public:
     using GameObject::GameObject;
+    /**
+     * @brief Resets the paddle to its initial positions
+     * @return void
+     */
+    void resetPaddle() {
+        this->setxPos(paddleStartXpos);
+        this->setyPos(paddleStartXpos);
+    }
+    /**
+     * @brief Draws the paddle at a specified (x, y) position
+     * @return void
+     */
+    void drawPaddle() {
+        gotoxy(this->getxPos(), this->getyPos());
+        std::cout << this->getShape();
+    }
 };
 
+////////////////////////////////////////////////////////////
+
+const int ballStartXpos = paddleStartXpos + 4;
+const int ballStartYpos = paddleStartYpos;
+
 class Ball : public GameObject {
+   private:
+    bool start = false;
+    int dir = 0;
+    /**
+     * @brief Returns either of 2 random integers (inclusive)
+     *
+     * @param a integer a
+     * @param b integer b
+     * @return int
+     */
+    int getRandomInt(int const a, int const b) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dis(1, 2);
+        return (dis(gen) == 1) ? a : b;
+    }
+
    public:
     using GameObject::GameObject;
+
+    bool startBall() {
+        this->start = true;
+        this->setDir(getRandomInt(1, 2));  // Can either go top left or top right
+        return true;
+    }
+    void setDir(int dir) { this->dir = dir; }
+    int getDir() { return this->dir; }
+
+    /**
+     * @brief Draws the ball at a specified (x, y) position
+     * @return void
+     */
+    void drawBall() {
+        gotoxy(this->getxPos(), this->getyPos());
+        std::cout << this->getShape();
+    }
+
+    /**
+     * @brief Resets the ball to its initial positions
+     * @return void
+     */
+    void resetBall() {
+        this->setyPos(ballStartXpos);
+        this->setyPos(ballStartYpos);
+    }
+
+    /**
+     * @brief Ugly way of inverting ball direction after hit
+     * @param int dir - ball direction
+     */
+    void switchDir(int dir) {
+        switch (dir) {
+            case 1:
+                this->setDir(4);
+            case 2:
+                this->setDir(3);
+            case 3:
+                this->setDir(2);
+            case 4:
+                this->setDir(1);
+        }
+    }
 };
 
 #endif
