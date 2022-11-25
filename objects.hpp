@@ -94,7 +94,7 @@ class Paddle : public GameObject {
    public:
     using GameObject::GameObject;
     /**
-     * @brief Resets the paddle to its initial positions
+     * @brief Resets the paddle to its initial position
      * @return void
      */
     void resetPaddle() {
@@ -155,7 +155,7 @@ class Ball : public GameObject {
     }
 
     /**
-     * @brief Resets the ball to its initial positions
+     * @brief Resets the ball to its initial position
      * @return void
      */
     void resetBall() {
@@ -164,7 +164,7 @@ class Ball : public GameObject {
     }
 
     /**
-     * @brief Ugly way of inverting ball direction after hit
+     * @brief Ugly way of inverting ball direction after hit. Sets the ball direction to its opposite
      * @param int dir - ball direction
      */
     void switchDir(int dir) {
