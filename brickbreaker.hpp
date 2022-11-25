@@ -10,6 +10,7 @@
 #include <vector>
 
 // Local headers
+#include "agent.hpp"
 #include "console.hpp"
 #include "objects.hpp"
 
@@ -33,11 +34,9 @@ auto fillVector(int size) {
                 b->setPadding("   ");
                 b->setVisible(1);
                 bricks.push_back(*b);
+                vec_size++;
             }
         }
-        vec_size++;
-        gotoxy(0, 0);
-        std::cout << vec_size;
     }
 
     return bricks;
@@ -46,16 +45,15 @@ auto fillVector(int size) {
 // Vector that holds the bricks
 std::vector<Brick> bricks = fillVector(NO_BRICKS);
 
-// Constructing the paddle and the ball
+// Constructing the paddle, ball and player
 
+Player *agent = new Player(3, 0);
 Paddle *paddle = new Paddle("==========", paddleStartXpos, paddleStartYpos);
 Ball *ball = new Ball("0", ballStartXpos, ballStartXpos);
 
 int bricksLeft = NO_BRICKS;  // Number of bricks left on the map
 bool win = false;            // Determines whether the game is won
 bool lose = false;           // Determines whether the game is lost
-int lives = 3;               // Number of lives
-int score = 0;               // Game score
 
 //////// FUNCTIONS FOR MAIN FILE
 
@@ -68,7 +66,6 @@ void dbg(bool enable = false) {
     switch (enable) {
         case true:
             gotoxy(SCREEN_WIDTH, SCREEN_HEIGHT + 1);
-            std::cout << "DEBUG:\n";
             std::cout << "ball dir: " << ball->getDir() << "\n";
             std::cout << "ball pos: " << ball->getxPos() << ", " << ball->getyPos() << "\n";
 
@@ -104,40 +101,31 @@ void drawBricks() {
  * @return void
  */
 void ballHitSlider() {
-    if (ball->getyPos() >= paddle->getyPos() && ball->getyPos() <= paddle->getyPos() + 8) {
-        // if ball y position is greater than or equal to slider y position AND ball y position is smaller than slider y position + 8 (why 8?):
-        // if ball x position is same as slider x position -1:
-        // if direction is bottom left: direction becomes top left
-        // else if direction is bottom right: direction becomes top right
-        if (ball->getxPos() == ball->getxPos() - 1) {
+    if (ball->getyPos() >= paddle->getyPos() && ball->getxPos() <= paddle->getxPos()) {
+        if (ball->getyPos() == ball->getyPos() - 1) {
             if (ball->getDir() == 3)
-                ball->setDir(2);
+                ball->switchDir(ball->getDir());
             else if (ball->getDir() == 4)
-                ball->setDir(1);
+                ball->switchDir(ball->getDir());
         }
     }
 }
 
 /**
- * @brief Removes integrity from a brick if it's hit by the ball
+ * @brief Handles ball/brick collision
  * @return void
  */
 void ballHitBrick() {
     for (auto &brick : bricks) {
         if (brick.getVisible()) {
-            if (ball->getyPos() >= brick.getyPos() && ball->getyPos() <= brick.getyPos() + 8) {
-                if (ball->getxPos() == brick.getxPos()) {
-                    if (brick.getIntegrity() < 1) {
-                        brick.setVisible(0);
-                        bricksLeft--;
-                    } else {
-                        brick.updateIntegrity(1);
-                        // debugging only
-                        gotoxy(0, 0);
-                        std::cout << "integrity: " << brick.getIntegrity() << "\n";
-                        score += 1;
-                        ball->switchDir(ball->getDir());
-                    }
+            if (ball->getxPos() == brick.getxPos() && ball->getyPos() == brick.getyPos()) {
+                if (brick.getIntegrity() < 1) {
+                    brick.setVisible(0);
+                    bricksLeft--;
+                } else {
+                    brick.updateIntegrity(1);
+                    agent->score += 1;
+                    ball->switchDir(ball->getDir());
                 }
             }
         }
