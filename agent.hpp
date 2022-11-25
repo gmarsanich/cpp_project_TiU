@@ -3,7 +3,7 @@
 #define AGENT_HPP
 
 // Local headers
-#include "brickbreaker.hpp"
+#include "console.hpp"
 #include "objects.hpp"
 
 /**
@@ -11,7 +11,19 @@
  */
 class Player {
    public:
-    Player() {}
+    int lives;
+    int score = 0;
+
+    /**
+     * @brief Construct a new Player object
+     *
+     * @param lives: int, number of lives
+     * @param score: int, player score
+     */
+    Player(int lives, int score) {
+        this->lives = lives;
+        this->score = score;
+    }
 
     /**
      * @brief Starts the game
@@ -49,10 +61,10 @@ class Player {
     }
 
     /**
-     * @brief Controls the movement of the paddle based on the ball position
+     * @brief Controls the movement of the paddle based on the ball direction
      * @param balldir ball direction
      */
-    void control(int balldir) {
+    void control(int balldir, Paddle *paddle) {
         if (balldir == 1) {
             this->moveLeft(paddle);
         } else if (balldir == 2) {
