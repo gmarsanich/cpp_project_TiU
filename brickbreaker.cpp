@@ -1,19 +1,14 @@
 #include "brickbreaker.hpp"
 
-#include "agent.hpp"
-
 // Game loop function
 void play() {
-    Player agent = agent;  // Initializing player
-    int lives = 3;         // Number of lives
-    int score = 0;         // Game score
-    ball->startBall();
+    bool started = ball->startBall();  // Starting the ball
     while (true) {
         gotoxy(0, 0);
-        std::cout << lives << " Lives left\n";
-        std::cout << "Score: " << score;
+        std::cout << agent->lives << " lives left\n";
+        std::cout << "Score: " << agent->score;
 
-        dbg();  // Display debug info (set to false)
+        dbg();  // Display debug info (default = false)
 
         system("clear");
         drawBricks();
@@ -22,42 +17,41 @@ void play() {
         ball->drawBall();
 
         // I hope you like if-else chains
-        if (ball->startBall()) {
-            agent.control(ball->getDir());
+        if (started) {
+            agent->control(ball->getDir(), paddle);
             if (ball->getDir() == 1) {  // Top right
-                ball->updatexPos(-1);
-                ball->updateyPos(2);
+                ball->updateyPos(-1);
+                ball->updatexPos(2);
                 if (ball->getxPos() > MAX_X) {
                     ball->setDir(2);
                 } else if (ball->getyPos() < MIN_Y) {
-                    ball->setDir(4);
+                    ball->switchDir(ball->getDir());
                 }
             } else if (ball->getDir() == 2) {  // Top left
                 ball->updateyPos(-1);
                 ball->updatexPos(-2);
                 if (ball->getyPos() < MIN_Y) {
-                    ball->setDir(3);
+                    ball->switchDir(ball->getDir());
                 } else if (ball->getxPos() < MIN_X) {
-                    ball->setDir(1);
+                    ball->switchDir(ball->getDir());
                 }
             } else if (ball->getDir() == 3) {  // Bottom left
                 ball->updateyPos(1);
-                ball->updatexPos(2);
-
+                ball->updatexPos(-2);
                 if (ball->getyPos() > MAX_Y) {
-                    lives -= 1;
+                    agent->lives -= 1;
                     paddle->resetPaddle();
                     ball->resetBall();
                 } else if (ball->getxPos() < MIN_X) {
-                    ball->setDir(4);
+                    ball->switchDir(ball->getDir());
                 }
             } else if (ball->getDir() == 4) {  // Bottom right
                 ball->updateyPos(1);
                 ball->updatexPos(2);
                 if (ball->getxPos() > MAX_X) {
-                    ball->setDir(3);
+                    ball->switchDir(ball->getDir());
                 } else if (ball->getyPos() > MAX_Y) {
-                    lives -= 1;
+                    agent->lives -= 1;
                     ball->resetBall();
                     paddle->resetPaddle();
                 }
@@ -66,7 +60,7 @@ void play() {
             ballHitBrick();
         }
 
-        if (lives < 0) {
+        if (agent->lives < 0) {
             lose = true;
             break;
         }
@@ -91,7 +85,7 @@ void play() {
 
         gotoxy(10, 9);
         std::cout << "Press any key to exit the game.\n";
-        std::cout << "\tFinal score: " << score;
+        std::cout << "\tFinal score: " << agent->score;
         getch();
     }
 
@@ -107,7 +101,7 @@ void play() {
         gotoxy(10, 9);
         std::cout << "Press any key to exit the game.\n";
         gotoxy(11, 10);
-        std::cout << "\tFinal score: " << score;
+        std::cout << "\tFinal score: " << agent->score;
         getch();
     }
 }
