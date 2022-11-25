@@ -8,7 +8,6 @@
 
 - Make ball and paddle respawn in appropriate position (i.e. at initial position) after life lost
   - Ball respawns in incorrect position
-- Fix paddle spawn
 - Fix ball start position
 
 # Report
