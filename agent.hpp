@@ -6,6 +6,8 @@
 #include "console.hpp"
 #include "objects.hpp"
 
+namespace player {
+
 /**
  * @brief Player class
  */
@@ -29,34 +31,34 @@ class Player {
      * @brief Starts the game
      * @return true
      */
-    void startGame(Ball *ball) {
+    void startGame(obj::Ball *ball) {
         ball->startBall();
     }
 
     // Moving the paddle
-    void moveRight(Paddle *paddle) {
+    void moveRight(obj::Paddle *paddle) {
         if (paddle->getxPos() < MAX_X) {
             paddle->updatexPos(2);
         } else {
-            while (paddle->getxPos() != paddleStartXpos) {
+            while (paddle->getxPos() != obj::paddleStartXpos) {
                 stopMove(paddle);
                 this->moveLeft(paddle);
             }
         }
     }
 
-    void moveLeft(Paddle *paddle) {
+    void moveLeft(obj::Paddle *paddle) {
         if (paddle->getxPos() > MIN_X) {
             paddle->updatexPos(-2);
         } else {
-            while (paddle->getxPos() != paddleStartXpos) {
+            while (paddle->getxPos() != obj::paddleStartXpos) {
                 stopMove(paddle);
                 this->moveRight(paddle);
             }
         }
     }
 
-    void stopMove(Paddle *paddle) {
+    void stopMove(obj::Paddle *paddle) {
         paddle->updatexPos(0);
     }
 
@@ -64,7 +66,7 @@ class Player {
      * @brief Controls the movement of the paddle based on the ball direction
      * @param balldir ball direction
      */
-    void control(int balldir, Paddle *paddle) {
+    void control(int balldir, obj::Paddle *paddle) {
         if (balldir == 1) {
             this->moveLeft(paddle);
         } else if (balldir == 2) {
@@ -76,5 +78,5 @@ class Player {
         }
     }
 };
-
+}  // namespace player
 #endif
