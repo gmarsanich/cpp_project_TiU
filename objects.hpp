@@ -14,6 +14,8 @@
 
 // This file contains the definitions of game objects - i.e. paddle, bricks, ball
 
+namespace obj {
+
 /**
  * @brief Parent class of all game objects
  */
@@ -56,11 +58,6 @@ class GameObject {
 ////////////////////////////////////////////////////////////
 
 class Brick : public GameObject {
-    /*!
-    Brick is heavily based on GameObject parent class, except for the padding attribute which determines which character pads the brick shape.
-    It should be the space character ' ', otherwise it will be visible in the game (and we don't want that)
-    */
-
    private:
     // Brick attributes
     std::string padding;  // the padding character
@@ -68,9 +65,6 @@ class Brick : public GameObject {
     int integrity = 3;    // how many hits the brick can take before it breaks
 
    public:
-    // Brick methods
-
-    // CONSTRUCTOR INHERITED FROM GameObject
     using GameObject::GameObject;
 
     // Getters and setters
@@ -102,7 +96,7 @@ class Paddle : public GameObject {
         this->setyPos(paddleStartXpos);
     }
     /**
-     * @brief Draws the paddle at a specified (x, y) position
+     * @brief Draws the paddle at its current (x, y) position
      * @return void
      */
     void drawPaddle() {
@@ -114,15 +108,14 @@ class Paddle : public GameObject {
 ////////////////////////////////////////////////////////////
 
 const int ballStartXpos = paddleStartXpos + 4;
-const int ballStartYpos = paddleStartYpos;
+const int ballStartYpos = paddleStartYpos + 0;  // for some reason the compiler gives me a "note" about this
 
 class Ball : public GameObject {
    private:
     bool start = false;
     int dir = 0;
     /**
-     * @brief Returns either of 2 random integers (inclusive)
-     *
+     * @brief Internal, returns either of 2 random integers (inclusive)
      * @param a integer a
      * @param b integer b
      * @return int
@@ -140,13 +133,13 @@ class Ball : public GameObject {
     bool startBall() {
         this->start = true;
         this->setDir(getRandomInt(1, 2));  // Can either go top left or top right
-        return true;
+        return this->start;
     }
     void setDir(int dir) { this->dir = dir; }
     int getDir() { return this->dir; }
 
     /**
-     * @brief Draws the ball at a specified (x, y) position
+     * @brief Draws the ball at its current (x, y) position
      * @return void
      */
     void drawBall() {
@@ -180,5 +173,6 @@ class Ball : public GameObject {
         }
     }
 };
+}  // namespace obj
 
 #endif
