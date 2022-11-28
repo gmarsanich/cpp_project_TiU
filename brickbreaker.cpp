@@ -2,78 +2,75 @@
 
 // Game loop function
 void play() {
-    bool started = ball->startBall();  // Starting the ball
-    while (true) {
+    bool started = brbk::ball->startBall();  // Starting the ball
+    while (started) {
         gotoxy(0, 0);
-        std::cout << agent->lives << " lives left\n";
-        std::cout << "Score: " << agent->score;
+        std::cout << brbk::agent->lives << " lives left\n";
+        std::cout << "Score: " << brbk::agent->score;
 
-        dbg();  // Display debug info (default = false)
+        brbk::dbg(true);  // Display debug info (default = false)
 
         system("clear");
-        drawBricks();
+        brbk::drawBricks();
 
-        paddle->drawPaddle();
-        ball->drawBall();
+        brbk::paddle->drawPaddle();
+        brbk::ball->drawBall();
+
+        brbk::agent->control(brbk::ball->getDir(), brbk::paddle);
 
         // I hope you like if-else chains
-        if (started) {
-            agent->control(ball->getDir(), paddle);
-            if (ball->getDir() == 1) {  // Top right
-                ball->updateyPos(-1);
-                ball->updatexPos(2);
-                if (ball->getxPos() > MAX_X) {
-                    ball->setDir(2);
-                } else if (ball->getyPos() < MIN_Y) {
-                    ball->switchDir(ball->getDir());
-                }
-            } else if (ball->getDir() == 2) {  // Top left
-                ball->updateyPos(-1);
-                ball->updatexPos(-2);
-                if (ball->getyPos() < MIN_Y) {
-                    ball->switchDir(ball->getDir());
-                } else if (ball->getxPos() < MIN_X) {
-                    ball->switchDir(ball->getDir());
-                }
-            } else if (ball->getDir() == 3) {  // Bottom left
-                ball->updateyPos(1);
-                ball->updatexPos(-2);
-                if (ball->getyPos() > MAX_Y) {
-                    agent->lives -= 1;
-                    paddle->resetPaddle();
-                    ball->resetBall();
-                } else if (ball->getxPos() < MIN_X) {
-                    ball->switchDir(ball->getDir());
-                }
-            } else if (ball->getDir() == 4) {  // Bottom right
-                ball->updateyPos(1);
-                ball->updatexPos(2);
-                if (ball->getxPos() > MAX_X) {
-                    ball->switchDir(ball->getDir());
-                } else if (ball->getyPos() > MAX_Y) {
-                    agent->lives -= 1;
-                    ball->resetBall();
-                    paddle->resetPaddle();
-                }
+        if (brbk::ball->getDir() == 1) {  // Top right
+            brbk::ball->updateyPos(-1);
+            brbk::ball->updatexPos(2);
+            if (brbk::ball->getxPos() > MAX_X) {
+                brbk::ball->setDir(2);
+            } else if (brbk::ball->getyPos() <= MIN_Y) {
+                brbk::ball->switchDir(brbk::ball->getDir());
             }
-            ballHitSlider();
-            ballHitBrick();
+        } else if (brbk::ball->getDir() == 2) {  // Top left
+            brbk::ball->updateyPos(-1);
+            brbk::ball->updatexPos(-2);
+            if (brbk::ball->getyPos() < MIN_Y) {
+                brbk::ball->switchDir(brbk::ball->getDir());
+            } else if (brbk::ball->getxPos() < MIN_X) {
+                brbk::ball->switchDir(brbk::ball->getDir());
+            }
+        } else if (brbk::ball->getDir() == 3) {  // Bottom left
+            brbk::ball->updateyPos(1);
+            brbk::ball->updatexPos(-2);
+            if (brbk::ball->getyPos() >= brbk::paddle->getyPos()) {
+                brbk::agent->lives -= 1;
+                brbk::paddle->resetPaddle();
+                brbk::ball->resetBall();
+            } else if (brbk::ball->getxPos() < MIN_X) {
+                brbk::ball->switchDir(brbk::ball->getDir());
+            }
+        } else if (brbk::ball->getDir() == 4) {  // Bottom right
+            brbk::ball->updateyPos(1);
+            brbk::ball->updatexPos(2);
+            if (brbk::ball->getxPos() >= MAX_X) {
+                brbk::ball->switchDir(brbk::ball->getDir());
+            } else if (brbk::ball->getyPos() > MAX_Y) {
+                brbk::agent->lives -= 1;
+                brbk::ball->resetBall();
+                brbk::paddle->resetPaddle();
+            }
         }
+        brbk::ballHitSlider();
+        brbk::ballHitBrick();
 
-        if (agent->lives < 0) {
-            lose = true;
+        if (brbk::agent->lives < 0) {
+            brbk::lose = true;
             break;
         }
 
-        if (bricksLeft == 0) {
-            win = true;
+        if (brbk::bricksLeft == 0) {
+            brbk::win = true;
             break;
         }
-
-        Sleep(10);
     }
 
-    if (lose == true) {
+    if (brbk::lose == true) {
         system("clear");
 
         gotoxy(10, 5);
@@ -85,11 +82,11 @@ void play() {
 
         gotoxy(10, 9);
         std::cout << "Press any key to exit the game.\n";
-        std::cout << "\tFinal score: " << agent->score;
+        std::cout << "\tFinal score: " << brbk::agent->score;
         getch();
     }
 
-    if (win == true) {
+    if (brbk::win == true) {
         system("clear");
         gotoxy(10, 5);
         std::cout << " --------------------- ";
@@ -101,7 +98,7 @@ void play() {
         gotoxy(10, 9);
         std::cout << "Press any key to exit the game.\n";
         gotoxy(11, 10);
-        std::cout << "\tFinal score: " << agent->score;
+        std::cout << "\tFinal score: " << brbk::agent->score;
         getch();
     }
 }
