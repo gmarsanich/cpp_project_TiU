@@ -16,21 +16,24 @@
 
 //////// CONSTANTS, DATA STRUCTURES AND INTERNAL FUNCTIONS
 
+namespace brbk {
+// namespace to limit conflicting variable names
+
 const int NO_BRICKS = 6;
 
 /**
- * @brief Fills a vector of size n with Brick objects
+ * @brief Fills a vector of size n with obj::Brick objects
  *
  * @param size size of the vector
  * @return auto vector of bricks
  */
 auto fillVector(int size) {
-    std::vector<Brick> bricks = {};
+    std::vector<obj::Brick> bricks = {};
     int vec_size = 0;
     while (vec_size <= size) {
         for (int x = MIN_X + 2; x <= MAX_X; x += 2) {
             for (int y = MIN_Y + 2; y <= MAX_Y / 2; y += 2) {
-                Brick *b = new Brick("\xDB", x, y);
+                obj::Brick *b = new obj::Brick("\xDB", x, y);
                 b->setPadding("   ");
                 b->setVisible(1);
                 bricks.push_back(*b);
@@ -43,13 +46,13 @@ auto fillVector(int size) {
 }
 
 // Vector that holds the bricks
-std::vector<Brick> bricks = fillVector(NO_BRICKS);
+std::vector<obj::Brick> bricks = fillVector(NO_BRICKS);
 
 // Constructing the paddle, ball and player
 
-Player *agent = new Player(3, 0);
-Paddle *paddle = new Paddle("==========", paddleStartXpos, paddleStartYpos);
-Ball *ball = new Ball("0", ballStartXpos, ballStartXpos);
+player::Player *agent = new player::Player(3, 0);
+obj::Paddle *paddle = new obj::Paddle("==========", obj::paddleStartXpos, obj::paddleStartYpos);
+obj::Ball *ball = new obj::Ball("0", obj::ballStartXpos, obj::ballStartYpos);
 
 int bricksLeft = NO_BRICKS;  // Number of bricks left on the map
 bool win = false;            // Determines whether the game is won
@@ -70,12 +73,23 @@ void dbg(bool enable = false) {
             std::cout << "ball pos: " << ball->getxPos() << ", " << ball->getyPos() << "\n";
 
             gotoxy(MIN_X, MIN_Y);
-            std::cout << "min here\n";
+            std::cout << "top left: " << MIN_X << ", " << MIN_Y << "\n";
 
-            gotoxy(paddleStartXpos, paddleStartYpos);
+            gotoxy(MAX_X, MIN_Y);
+            std::cout << "top right: " << MAX_X << ", " << MIN_Y << "\n";
+
+            gotoxy(MAX_X, MAX_Y);
+            std::cout << "\n";
+            std::cout << "bottom right: " << MAX_X << ", " << MAX_Y << "\n";
+
+            gotoxy(MIN_X, MAX_Y);
+            std::cout << " \n";
+            std::cout << "bottom left: " << MIN_X << ", " << MAX_Y << "\n";
+
+            gotoxy(obj::paddleStartXpos, obj::paddleStartYpos);
             std::cout << "paddle spawn here\n";
 
-            gotoxy(ballStartXpos, ballStartYpos);
+            gotoxy(obj::ballStartXpos, obj::ballStartYpos);
             std::cout << "ball spawn here\n";
 
         default:
@@ -131,5 +145,5 @@ void ballHitBrick() {
         }
     }
 }
-
+}  // namespace brbk
 #endif
