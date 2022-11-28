@@ -108,7 +108,7 @@ class Paddle : public GameObject {
 ////////////////////////////////////////////////////////////
 
 const int ballStartXpos = paddleStartXpos + 4;
-const int ballStartYpos = paddleStartYpos + 0;  // for some reason the compiler gives me a "note" about this
+const int ballStartYpos = paddleStartYpos + 0;  // for some reason the compiler gives me a "note" about this declaration unless I add 0
 
 class Ball : public GameObject {
    private:
